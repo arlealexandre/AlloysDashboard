@@ -23,7 +23,7 @@ It provides a graphical user interface for data visualization, powered by a Pyth
 
 <a name="docs"></a>
 ## 📚 Docs
-Technical documentation (UML diagrams) is available in the `Docs` folder. All diagrams are created using [Mermaid](https://mermaid.js.org/), which ensures traceability and facilitates maintainability.
+Technical documentation (UML diagrams) is available in the `docs` folder. All diagrams are created using [Mermaid](https://mermaid.js.org/), which ensures traceability and facilitates maintainability.
 
 <a name="project-structure"></a>
 ## 🗂️ Project structure
