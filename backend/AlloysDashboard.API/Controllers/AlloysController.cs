@@ -1,4 +1,3 @@
-using AlloysDashboard.Application.DTOs;
 using AlloysDashboard.Application.UseCases;
 using Microsoft.AspNetCore.Mvc;
 
@@ -44,11 +43,11 @@ public class AlloysController : ControllerBase
         try
         {
             await _importAlloysUseCase.ExecuteAsync(stream);
-            return Ok("Importation massive réussie.");
+            return Ok();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            return StatusCode(500, $"Error occurred during import : {ex.Message}");
+            return StatusCode(500, $"Error occurred during import.");
         }
     }
 }

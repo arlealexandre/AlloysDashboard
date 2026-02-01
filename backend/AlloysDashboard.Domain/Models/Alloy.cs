@@ -6,6 +6,6 @@ namespace AlloysDashboard.Domain.Models;
 public class Alloy
 {
     public required int Name { get; set; }
-    public required AlloyProperties Properties { get; set; }
+    public AlloyProperties Properties { get; set; } = new();
     public ICollection<Composition> Compositions { get; set; } = new List<Composition>();
 }

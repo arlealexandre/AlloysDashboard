@@ -21,7 +21,19 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Alloy>(entity =>
         {
             entity.HasKey(a => a.Name);
-            entity.OwnsOne(a => a.Properties);
+            entity.OwnsOne(a => a.Properties, p =>
+            {
+                p.Property(x => x.ProductType);
+                p.Property(x => x.ProductShape);
+                p.Property(x => x.ProductThickness);
+                p.Property(x => x.AgingStep1Temp);
+                p.Property(x => x.AgingStep1Time);
+                p.Property(x => x.CastingTechnology);
+                p.Property(x => x.HomoStep1Temp);
+                p.Property(x => x.HomoStep1Time);
+                p.Property(x => x.HotProcessStep1TIn);
+                p.Property(x => x.LDirectionTys);
+            });
         });
 
         // Chemical Element has symbol as primary key
