@@ -13,7 +13,7 @@ graph RL
     end
 
     %% Interactions
-    User -- Requests --> System
+    User -- UI Interactions --> System
     System -- Data --> User
 
     %% Style
@@ -63,9 +63,9 @@ graph LR
     subgraph "Alloys Dashboard"
         
         %% Internal components
-        NEXT["<b>SPA</b><br/>(Next.js)"]
-        API["<b>REST API</b><br/>(Python FastAPI)"]
-        Database[("<b>Database</b><br/>(MSSQL)")]
+        NEXT["<b>SPA</b><br/>(React)"]
+        API["<b>REST API</b><br/>(.NET / C#)"]
+        Database[("<b>Database</b><br/>(SQLite)")]
         
         %% Internal dataflow
         API -- "SQL" --> Database
@@ -81,9 +81,62 @@ graph LR
     classDef actor stroke:none,fill:none,font-size:20px
 ```
 
-## Detailed view - SPA (Next.js)
+## Detailed view - SPA (React)
 
-## Detailed view - REST API (Python FastAPI)
+## Detailed view - REST API (.NET / C#)
+
+```mermaid
+graph LR
+
+    %% System actors
+    SPA(("👤<br>SPA")):::actor
+    Database[("<b>Database</b><br/>(SQLite)")]
+
+    %% REST API subsystem follows Clean Architecture principles
+    subgraph "REST API (.NET / C#)"
+        
+        %% Api Layer
+        subgraph "Api Layer"
+            Controllers["<b>Controllers</b><br><small>HTTP Endpoints</small>"]
+        end
+
+        %% Application Layer
+        subgraph "Application Layer"
+            UseCases["<b>Use Cases</b><br><small>Business Logic</small>"]
+            RepoInt["<b>Repository Interfaces</b><br><small>Abstractions</small>"]
+            DTOs["<b>DTOs</b><br><small>Request/Response Objects</small>"]
+            DI_Application["<b>Dependency Injection</b>"]
+        end
+
+        %% Domain Layer
+        subgraph "Domain Layer"
+            Models["<b>Models</b><br><small>Core Data Structure</small>"]
+            Exceptions["<b>Exceptions</b>"]
+        end
+
+        %% Infrastructure Layer
+        subgraph "Infrastructure Layer"
+            DbContext["<b>EF Core</b><br><small>DbContext</small>"]
+            RepoImpl["<b>Repository Implementations</b><br><small>Data Access</small>"]
+            DI_Infrastructure["<b>Dependency Injection</b>"]
+        end
+
+    end
+
+    %% Interactions
+    SPA -- "HTTPS Request" --> Controllers
+    Controllers -- "HTTPS Response (JSON)" --> SPA
+    Controllers <-- "DTOs" --> UseCases
+    RepoImpl -- Manipulate --> Models
+    UseCases <-- "Models" --> RepoInt
+    UseCases -- Mapping --> Models
+    RepoInt -. "Implemented by" .-> RepoImpl
+    RepoImpl  --> DbContext
+    DbContext -- "SQL" --> Database
+
+    %% Style
+    classDef actor stroke:none,fill:none,font-size:20px
+```
 
 ## Class diagram
 
@@ -91,35 +144,35 @@ graph LR
 classDiagram
 
     class Alloy {
-        + int name
+        + int Name
     }
 
     class ChemicalElement {
-        + str symbol
+        + string Symbol
     }
 
     class Composition {
-        + float nominal
-        + float min
-        + float max
+        + float Nominal
+        + float? Min
+        + float? Max
     }
 
-    class Properties {
-        + float product_thickness
-        + str product_type
-        + str product_shape
-        + float l_direction_tys
-        + float aging_step_1_temp
-        + float aging_step_1_time
-        + float homo_step_1_temp
-        + float homo_step_1_time
-        + float hot_process_step_1_t_in
-        + str casting_technology
+    class AlloyProperties {
+        + float? ProductThickness
+        + string? ProductType
+        + string? ProductShape
+        + float? LDirectionTys
+        + float? AgingStep1Temp
+        + float? AgingStep1Time
+        + float? HomoStep1Temp
+        + float? HomoStep1Time
+        + float? HotProcessStep1TIn
+        + string? CastingTechnology
     }
 
     Alloy "1" -- "1..*" Composition : composed_by
     Composition "0..*" -- "1" ChemicalElement : has_element
-    Alloy "1" -- "1" Properties : has_properties
+    Alloy "1" -- "1" AlloyProperties : has_properties
 ```
 
 ## Dynamic view
