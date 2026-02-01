@@ -1,8 +1,8 @@
 # Alloys Dashboard
 
-This repository stores a full stack web application built with [Next.js](https://nextjs.org/) (frontend) and Python [FastAPI](https://fastapi.tiangolo.com/) (backend). 
+This repository stores a full stack web application built with [React](https://react.dev/) (frontend) and [.NET Web REST API](https://dotnet.microsoft.com/en-us/apps/aspnet/apis) (backend). 
 
-It provides a graphical user interface for data visualization, powered by a Python FastAPI REST API.
+It provides a graphical user interface for data visualization, powered by a .NET Web REST API.
 
 ## Table of Contents
 
