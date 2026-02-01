@@ -15,9 +15,13 @@ public class AlloyRepository : IAlloyRepository
         _context = context;
     }
 
-    public async Task<List<Alloy>> ListAsync()
+    public async Task<List<Alloy>> ListAsync(int page, int pageSize)
     {
-        return await _context.Alloys.ToListAsync();
+        return await _context.Alloys
+            .AsNoTracking()
+            .Include(a => a.Compositions)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize).ToListAsync();
     }
 
     public async Task SeedFromListAsync(List<Alloy> alloys)

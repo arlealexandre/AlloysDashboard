@@ -4,5 +4,5 @@ namespace AlloysDashboard.Application.DTOs;
 
 public class ListAlloysResponseDTO
 {
-    public List<Alloy> Alloys { get; set; } = new();
+    public List<AlloyDTO> Alloys { get; set; } = new();
 }

@@ -20,11 +20,11 @@ public class AlloysController : ControllerBase
     }
 
     [HttpGet("alloys")]
-    public async Task<IActionResult> ListAlloys()
+    public async Task<IActionResult> ListAlloys(int page = 1, int pageSize = 50)
     {
         try
         {
-            var result = await _listAlloysUseCase.ExecuteAsync();
+            var result = await _listAlloysUseCase.ExecuteAsync(page, pageSize);
             return Ok(result);
         }
         catch (Exception)
