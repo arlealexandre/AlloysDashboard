@@ -1,3 +1,4 @@
+using AlloysDashboard.Infrastructure;
 using LibraryManagementSystem.Application;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,10 @@ builder.Services.AddControllers();
 
 // Adding Application layer
 builder.Services.AddUseCases();
+
+// Adding Infrastructure layer
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddInfrastructure(connectionString);
 
 var app = builder.Build();
 

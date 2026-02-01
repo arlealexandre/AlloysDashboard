@@ -5,5 +5,5 @@ namespace AlloysDashboard.Domain.Models;
 /// </summary>
 public class ChemicalElement
 {
-    public required string Symbol;
+    public required string Symbol { get; set; }
 }

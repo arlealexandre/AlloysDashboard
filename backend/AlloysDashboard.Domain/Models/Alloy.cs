@@ -5,7 +5,7 @@ namespace AlloysDashboard.Domain.Models;
 /// </summary>
 public class Alloy
 {
-    public required int Name;
-    public required AlloyProperties Properties;
-    public IEnumerable<Composition> Compositions = new List<Composition>();
+    public required int Name { get; set; }
+    public required AlloyProperties Properties { get; set; }
+    public ICollection<Composition> Compositions { get; set; } = new List<Composition>();
 }
