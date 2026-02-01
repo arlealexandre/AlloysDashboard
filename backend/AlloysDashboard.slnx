@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="AlloysDashboard.API/AlloysDashboard.API.csproj" />
+  <Project Path="AlloysDashboard.Application/AlloysDashboard.Application.csproj" />
+  <Project Path="AlloysDashboard.Domain/AlloysDashboard.Domain.csproj" />
+  <Project Path="AlloysDashboard.Infrastructure/AlloysDashboard.Infrastructure.csproj" />
+</Solution>
