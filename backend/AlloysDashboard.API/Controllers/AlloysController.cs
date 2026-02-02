@@ -19,7 +19,7 @@ public class AlloysController : ControllerBase
         _importAlloysUseCase = importAlloysUseCase;
     }
 
-    [HttpGet("alloys")]
+    [HttpGet]
     public async Task<IActionResult> ListAlloys(int page = 1, int pageSize = 50)
     {
         try
