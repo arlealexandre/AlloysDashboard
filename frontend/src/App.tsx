@@ -1,24 +1,58 @@
-import { Layout } from 'antd'
+import { Layout, notification } from 'antd'
 import DashboardFooter from './components/DashboardFooter.tsx'
 import DashboardHeader from './components/DashboardHeader.tsx'
 import DashboardContent from './components/DashboardContent.tsx'
+import { useState } from 'react'
 
 const App = () => {
 
-  return (
-    <Layout style={{ minHeight: '100vh'}}>
+    const [api, contextHolder] = notification.useNotification();
+    const [isUploading, setIsUploading] = useState(false)
+    const [refreshTrigger, setRefreshTrigger] = useState(0)
 
-      {/* Header */}
-      <DashboardHeader />
+    const openSuccessNotification = (message: string) => {
+        api['success']({
+        title: 'Success',
+        description:
+            message,
+        });
+    };
 
-      {/* Main content */}
-      <DashboardContent />
+    const openErrorNotification = (message: string) => {
+        api['error']({
+        title: 'Error',
+        description:
+            message,
+        });
+    };
 
-      {/* Footer */}
-      <DashboardFooter />
+    const handleUploadSuccess = (message: string) => {
+      openSuccessNotification(message)
+      setIsUploading(false)
+      setRefreshTrigger(prev => prev + 1);
+    }
 
-    </Layout>
-  )
+    return (
+      <Layout style={{ minHeight: '100vh'}}>
+
+        {contextHolder}
+
+        {/* Header */}
+        <DashboardHeader
+          isUploading={isUploading}
+          handleOnStartUploading={() => setIsUploading(true)}
+          handleUploadSuccess={(message) => handleUploadSuccess(message)}
+          handleUploadFailure={(message) => openErrorNotification(message)}
+        />
+
+        {/* Main content */}
+        <DashboardContent refreshTrigger={refreshTrigger} externalLoading={isUploading} handleFetchFailure={(message) => openErrorNotification(message)}/>
+
+        {/* Footer */}
+        <DashboardFooter />
+
+      </Layout>
+    )
 }
 
 export default App

@@ -54,6 +54,9 @@ public class ListAlloysUseCase
             return alloyDto;
         }).ToList();
 
-        return new ListAlloysResponseDTO { Alloys = alloysDto };
+        return new ListAlloysResponseDTO { 
+            TotalCount = await _alloyRepository.GetTotalAlloysAsync(),
+            Alloys = alloysDto 
+        };
     }
 }

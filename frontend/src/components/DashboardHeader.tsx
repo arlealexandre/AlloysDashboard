@@ -3,7 +3,14 @@ import UploadButton from './UploadButton'
 
 const { Header } = Layout
 
-const DashboardHeader = () => {
+interface Props {
+  isUploading: boolean
+  handleOnStartUploading: () => void
+  handleUploadSuccess: (message: string) => void
+  handleUploadFailure: (message: string) => void
+}
+
+const DashboardHeader = ({isUploading, handleOnStartUploading, handleUploadSuccess, handleUploadFailure}: Props) => {
 
     return (
         <Header
@@ -16,7 +23,7 @@ const DashboardHeader = () => {
         >
           <div style={{fontSize: 18, fontWeight: 600, color: '#ffffff'}}>Alloys Dashboard</div>
 
-          <UploadButton />
+          <UploadButton isUploading={isUploading} onStartUploading={handleOnStartUploading} onSuccess={handleUploadSuccess} onFailure={handleUploadFailure} />
 
         </Header>
     )

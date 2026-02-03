@@ -15,6 +15,11 @@ public class AlloyRepository : IAlloyRepository
         _context = context;
     }
 
+    public async Task<int> GetTotalAlloysAsync()
+    {
+        return await _context.Alloys.CountAsync();
+    }
+
     public async Task<List<Alloy>> ListAsync(int page, int pageSize)
     {
         return await _context.Alloys
