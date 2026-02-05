@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Button, Flex, Layout, Table, Tag, type TableColumnsType } from 'antd';
+import { Button, Flex, Layout } from 'antd';
 import type { Alloy } from '../types/Alloy';
-import type { Composition } from '../types/Composition';
 import type { TableRowSelection } from 'antd/es/table/interface';
 
 import XYSelectionDrawer from './XYSelectionDrawer';
+import AlloysTable from './AlloysTable';
 const { Content } = Layout;
 
 interface Props {
@@ -13,58 +13,18 @@ interface Props {
     handleFetchFailure: (message: string) => void
 }
 
-/* Table columns definition */
-const columns: TableColumnsType<Alloy> = [
-    { title: 'Name', dataIndex: 'name', key: 'name', fixed: 'start' },
-    { title: 'Product Type', dataIndex: ['properties', 'productType'], key: 'productType', fixed: 'start' },
-    { title: 'Product Shape', dataIndex: ['properties', 'productShape'], key: 'productShape', fixed: 'start' },
-    { title: 'Composition', dataIndex: 'compositions', key: 'compositions', width: 500, fixed: 'start',
-        render: (_: any, { compositions }: any) => (
-        <Flex wrap gap="small" align="center">
-            {compositions.map((composition: Composition) => {
-            
-            var compositionLabel = ''
-            if (composition.nominal != null) {
-                if (composition.min != null && composition.max != null) {
-                    compositionLabel = `${composition.chemicalElementSymbol}: (${composition.min} <=) ${composition.nominal} (<= ${composition.max})`
-                } else if (composition.min != null && composition.max == null) {
-                    compositionLabel = `${composition.chemicalElementSymbol}: (${composition.min} <=) ${composition.nominal}`
-                } else if (composition.min == null && composition.max != null) {
-                    compositionLabel = `${composition.chemicalElementSymbol}: ${composition.nominal} (<= ${composition.max})`
-                } else {
-                    compositionLabel = `${composition.chemicalElementSymbol}: ${composition.nominal}`
-                }
-            }
 
-            return (
-                <Tag key={composition.chemicalElementSymbol}>
-                    {compositionLabel}    
-                </Tag>
-            );
-            })}
-        </Flex>
-        ) 
-    },
-    { title: 'Product Thickness', dataIndex: ['properties', 'productThickness'], key: 'productThickness' },
-    { title: 'L Direction Tys', dataIndex: ['properties', 'lDirectionTys'], key: 'lDirectionTys' },
-    { title: 'Aging Step 1 Temp', dataIndex: ['properties', 'agingStep1Temp'], key: 'agingStep1Temp' },
-    { title: 'Aging Step 1 Time', dataIndex: ['properties', 'agingStep1Time'], key: 'agingStep1Time' },
-    { title: 'Homo Step 1 Temp', dataIndex: ['properties', 'homoStep1Temp'], key: 'homoStep1Temp' },
-    { title: 'Homo Step 1 Time', dataIndex: ['properties', 'homoStep1Time'], key: 'homoStep1Time' },
-    { title: 'Hot Process Step 1 T In', dataIndex: ['properties', 'hotProcessStep1TIn'], key: 'hotProcessStep1TIn' },
-    { title: 'Casting Technology', dataIndex: ['properties', 'castingTechnology'], key: 'castingTechnology' }
-];
 
 const DashboardContent = ({refreshTrigger, externalLoading, handleFetchFailure}: Props) => {
 
-    const [alloys, setAlloys] = useState<Alloy[]>([]);
-    const [internalLoading, setInternalLoading] = useState(false);
+    const [alloys, setAlloys] = useState<Alloy[]>([])
+    const [internalLoading, setInternalLoading] = useState(false)
     const [defaultPage, setDefaultPage] = useState(1)
-    const [defaultPageSize, setDefaultPageSize] = useState(5)
+    const [defaultPageSize, setDefaultPageSize] = useState(10)
     const [totalAlloysInDb, setTotalAlloysInDb] = useState(0)
-    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    const hasSelected = selectedRowKeys.length > 0;
+    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+    const hasSelected = selectedRowKeys.length > 0
 
     const isTableLoading: boolean = internalLoading || externalLoading
 
@@ -72,7 +32,7 @@ const DashboardContent = ({refreshTrigger, externalLoading, handleFetchFailure}:
         setAlloys([])
         setTotalAlloysInDb(0)
         setDefaultPage(1)
-        setDefaultPageSize(5)
+        setDefaultPageSize(10)
     }
 
     const selectedAlloys = alloys.filter(alloy => 
@@ -99,7 +59,7 @@ const DashboardContent = ({refreshTrigger, externalLoading, handleFetchFailure}:
                 setTotalAlloysInDb(data.totalCount)
             }
         } catch (err) {
-            handleFetchFailure('Error while fetching alloys. Please make sure you')
+            handleFetchFailure('Error retrieving alloys. Please ensure that the database is populated and active.')
             resetTable()
         } finally {
             setInternalLoading(false);
@@ -133,36 +93,34 @@ const DashboardContent = ({refreshTrigger, externalLoading, handleFetchFailure}:
                 <Content>
                     
                     <Flex gap="middle" vertical>
+
                         <Flex align="center" gap="middle">
                             <Button 
                                 type="primary" 
                                 disabled={!hasSelected}
-                                onClick={() => setIsDrawerOpen(true)} // Ouvre le drawer
+                                onClick={() => setIsDrawerOpen(true)}
                             >
                                 Scatter Plot
                             </Button>
                             {hasSelected ? `Selected ${selectedRowKeys.length} alloys` : null}
                         </Flex>
-                        <Table
-                            loading={isTableLoading}
-                            rowSelection={rowSelection}
-                            columns={columns}
-                            dataSource={alloys}
-                            scroll={{x: 'max-content'}}
-                            pagination={{
-                                
-                                current: defaultPage,
+                        
+                        {/* Alloys Table */}
+
+                        <AlloysTable 
+                            alloys={alloys}
+                            isLoading={isTableLoading} pagination={{
+                                page: defaultPage,
                                 pageSize: defaultPageSize,
                                 total: totalAlloysInDb,
-                                showSizeChanger: true,
-                                showTotal: (total) => `Total ${total} alloys`,
-                                onChange: (page, size) => {
-                                    setDefaultPage(page);
-                                    setDefaultPageSize(size);
-                                },
-                                pageSizeOptions: [5,10,20,50,100,200]
-                            }}
+                                onChange: function (page: number, pageSize: number): void {
+                                    setDefaultPage(page)
+                                    setDefaultPageSize(pageSize)
+                                }
+                            }} 
+                            rowSelection={rowSelection}                      
                         />
+
                     </Flex>
 
                     <XYSelectionDrawer 
