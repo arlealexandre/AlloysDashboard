@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Button, Flex, Layout } from 'antd';
 import type { Alloy } from '../types/Alloy';
-import type { TableRowSelection } from 'antd/es/table/interface';
 import AlloysTable from './AlloysTable';
 import ScatterPlotViewer from './ScatterPlotViewer';
 
@@ -21,9 +20,10 @@ const DashboardContent = ({refreshTrigger, externalLoading, handleFetchFailure}:
     const [defaultPage, setDefaultPage] = useState(1)
     const [defaultPageSize, setDefaultPageSize] = useState(10)
     const [totalAlloysInDb, setTotalAlloysInDb] = useState(0)
-    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
     const [isDrawerOpen, setIsDrawerOpen] = useState(false)
-    const hasSelected = selectedRowKeys.length > 0
+    const [selectedAlloys, setSelectedAlloys] = useState<Alloy[]>([]);
+
+    const hasSelected = selectedAlloys.length > 0
 
     const isTableLoading: boolean = internalLoading || externalLoading
 
@@ -33,11 +33,6 @@ const DashboardContent = ({refreshTrigger, externalLoading, handleFetchFailure}:
         setDefaultPage(1)
         setDefaultPageSize(10)
     }
-
-    const selectedAlloys = alloys.filter(alloy => 
-        selectedRowKeys.includes(alloy.name as React.Key)
-    );
-
 
     const fetchAlloys = useCallback(async () => {
         setInternalLoading(true);
@@ -69,15 +64,6 @@ const DashboardContent = ({refreshTrigger, externalLoading, handleFetchFailure}:
         fetchAlloys();
     }, [fetchAlloys, refreshTrigger]);
 
-    const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-        setSelectedRowKeys(newSelectedRowKeys);
-    };
-
-    const rowSelection: TableRowSelection<Alloy> = {
-        selectedRowKeys,
-        onChange: onSelectChange,
-    };
-
     return (
         <Content style={{ padding: '20px' }}>
 
@@ -96,7 +82,7 @@ const DashboardContent = ({refreshTrigger, externalLoading, handleFetchFailure}:
                             >
                                 Scatter Plot
                             </Button>
-                            {hasSelected ? `Selected ${selectedRowKeys.length} alloys` : null}
+                            {hasSelected ? `Selected ${selectedAlloys.length} alloys` : null}
                         </Flex>
                         
                         {/* Alloys Table */}
@@ -111,8 +97,8 @@ const DashboardContent = ({refreshTrigger, externalLoading, handleFetchFailure}:
                                     setDefaultPage(page)
                                     setDefaultPageSize(pageSize)
                                 }
-                            }} 
-                            rowSelection={rowSelection}                      
+                            }}
+                            onSelectionChange={(selected) => setSelectedAlloys(selected)}              
                         />
 
                     </Flex>

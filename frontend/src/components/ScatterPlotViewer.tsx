@@ -4,6 +4,25 @@ import { useMemo, useState } from "react"
 import { Scatter } from "react-chartjs-2"
 import { type ChartData, type ChartOptions } from "chart.js"
 
+import {
+    Chart,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Tooltip,
+    Legend,
+    ScatterController
+} from "chart.js";
+
+Chart.register(
+    LinearScale,
+    PointElement,
+    LineElement,
+    Tooltip,
+    Legend,
+    ScatterController
+);
+
 interface Props {
     filteredAlloys: Alloy[],
     isOpen: boolean,

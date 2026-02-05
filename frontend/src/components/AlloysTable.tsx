@@ -1,6 +1,8 @@
 import { Flex, Table, Tag, type TableColumnsType } from "antd"
 import type { Alloy } from "../types/Alloy"
 import type { Composition } from "../types/Composition"
+import { useState } from "react"
+import type { TableRowSelection } from "antd/es/table/interface"
 
 interface Props {
     alloys: Alloy[],
@@ -11,7 +13,7 @@ interface Props {
         total: number,
         onChange: (page: number, pageSize: number) => void
     },
-    rowSelection: any
+    onSelectionChange: (selected: Alloy[]) => void
 }
 
 /* Table columns definition */
@@ -56,10 +58,28 @@ const columns: TableColumnsType<Alloy> = [
     { title: 'Casting Technology', dataIndex: ['properties', 'castingTechnology'], key: 'castingTechnology' }
 ]
 
-const AlloysTable = ({alloys, isLoading, pagination, rowSelection}: Props) => {
+const AlloysTable = ({alloys, isLoading, pagination, onSelectionChange}: Props) => {
+
+    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+
+    const onSelectChange = (keys: React.Key[]) => {
+        setSelectedRowKeys(keys);
+
+        const selected = alloys.filter(a =>
+            keys.includes(a.name)
+        );
+
+        onSelectionChange(selected);
+    };
+
+    const rowSelection: TableRowSelection<Alloy> = {
+        selectedRowKeys: selectedRowKeys,
+        onChange: onSelectChange,
+    };
 
     return (
         <Table
+            rowKey="name"
             loading={isLoading}
             rowSelection={rowSelection}
             columns={columns}
