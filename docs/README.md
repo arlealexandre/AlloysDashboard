@@ -81,8 +81,6 @@ graph LR
     classDef actor stroke:none,fill:none,font-size:20px
 ```
 
-## Detailed view - SPA (React)
-
 ## Detailed view - REST API (.NET / C#)
 
 ```mermaid
@@ -174,5 +172,3 @@ classDiagram
     Composition "0..*" -- "1" ChemicalElement : has_element
     Alloy "1" -- "1" AlloyProperties : has_properties
 ```
-
-## Dynamic view
