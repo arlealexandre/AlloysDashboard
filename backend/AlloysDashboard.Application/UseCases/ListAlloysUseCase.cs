@@ -12,9 +12,9 @@ public class ListAlloysUseCase
         _alloyRepository = alloyRepository;
     }
 
-    public async Task<ListAlloysResponseDTO> ExecuteAsync(int page, int pageSize)
+    public async Task<ListAlloysResponseDTO> ExecuteAsync(int page, int pageSize, string? productType, string? productShape)
     {
-        var alloysFromModel = await _alloyRepository.ListAsync(page, pageSize);
+        var alloysFromModel = await _alloyRepository.ListAsync(page, pageSize, productType, productShape);
 
         var alloysDto = alloysFromModel.Select(alloy =>
         {
@@ -55,7 +55,7 @@ public class ListAlloysUseCase
         }).ToList();
 
         return new ListAlloysResponseDTO { 
-            TotalCount = await _alloyRepository.GetTotalAlloysAsync(),
+            TotalCount = await _alloyRepository.GetTotalAlloysAsync(productType, productShape),
             Alloys = alloysDto 
         };
     }

@@ -9,6 +9,8 @@ public static class DependencyInjection
     {
         services.AddScoped<ListAlloysUseCase>();
         services.AddScoped<ImportAlloysUseCase>();
+        services.AddScoped<GetProductTypeListUseCase>();
+        services.AddScoped<GetProductShapeListUseCase>();
 
         return services;
     }

@@ -15,18 +15,71 @@ public class AlloyRepository : IAlloyRepository
         _context = context;
     }
 
-    public async Task<int> GetTotalAlloysAsync()
-    {
-        return await _context.Alloys.CountAsync();
-    }
-
-    public async Task<List<Alloy>> ListAsync(int page, int pageSize)
+    public async Task<List<string>> GetProductShapeList()
     {
         return await _context.Alloys
+            .Where(a => a.Properties.ProductShape != null)
+            .Select(a => a.Properties.ProductShape!)
+            .Distinct()
+            .ToListAsync();
+    }
+
+    public async Task<List<string>> GetProductTypeList()
+    {
+        return await _context.Alloys
+            .Where(a => a.Properties.ProductType != null)
+            .Select(a => a.Properties.ProductType!)
+            .Distinct()
+            .ToListAsync();
+    }
+
+   public async Task<int> GetTotalAlloysAsync(string? productType, string? productShape)
+    {
+        var query = _context.Alloys
+            .AsNoTracking()
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(productType))
+        {
+            query = query.Where(a => a.Properties.ProductType == productType);
+        }
+
+        if (!string.IsNullOrWhiteSpace(productShape))
+        {
+            query = query.Where(a => a.Properties.ProductShape == productShape);
+        }
+
+        return await query.CountAsync();
+    }
+
+    public async Task<List<Alloy>> ListAsync(
+        int page, 
+        int pageSize, 
+        string? productType, 
+        string? productShape
+    )
+    {
+        var query = _context.Alloys
             .AsNoTracking()
             .Include(a => a.Compositions)
+            .AsQueryable();
+
+        // Apply filters only when not null
+        if (!string.IsNullOrWhiteSpace(productType))
+        {
+            query = query.Where(a => a.Properties.ProductType == productType);
+        }
+
+        if (!string.IsNullOrWhiteSpace(productShape))
+        {
+            query = query.Where(a => a.Properties.ProductShape == productShape);
+        }
+
+        return await query
+            .OrderBy(a => a.Name)
             .Skip((page - 1) * pageSize)
-            .Take(pageSize).ToListAsync();
+            .Take(pageSize)
+            .ToListAsync();
     }
 
     public async Task SeedFromListAsync(List<Alloy> alloys)

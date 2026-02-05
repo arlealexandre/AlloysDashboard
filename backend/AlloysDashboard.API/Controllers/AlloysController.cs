@@ -9,22 +9,56 @@ public class AlloysController : ControllerBase
 {
     private readonly ListAlloysUseCase _listAlloysUseCase;
     private readonly ImportAlloysUseCase _importAlloysUseCase;
+    private readonly GetProductTypeListUseCase _getProductTypeListUseCase;
+    private readonly GetProductShapeListUseCase _getProductShapeListUseCase;
 
     public AlloysController(
         ListAlloysUseCase listAlloysUseCase,
-        ImportAlloysUseCase importAlloysUseCase
+        ImportAlloysUseCase importAlloysUseCase,
+        GetProductTypeListUseCase getProductTypeListUseCase,
+        GetProductShapeListUseCase getProductShapeListUseCase
     )
     {
         _listAlloysUseCase = listAlloysUseCase;
         _importAlloysUseCase = importAlloysUseCase;
+        _getProductTypeListUseCase = getProductTypeListUseCase;
+        _getProductShapeListUseCase = getProductShapeListUseCase;
     }
 
-    [HttpGet]
-    public async Task<IActionResult> ListAlloys(int page = 1, int pageSize = 50)
+    [HttpGet("productTypes")]
+    public async Task<IActionResult> GetProductTypeList()
     {
         try
         {
-            var result = await _listAlloysUseCase.ExecuteAsync(page, pageSize);
+            var result = await _getProductTypeListUseCase.ExecuteAsync();
+            return Ok(result);
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new { errorMessage = "Failed to retrieve product types."});
+        }
+    }
+
+    [HttpGet("productShapes")]
+    public async Task<IActionResult> GetProductShapeList()
+    {
+        try
+        {
+            var result = await _getProductShapeListUseCase.ExecuteAsync();
+            return Ok(result);
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new { errorMessage = "Failed to retrieve product types."});
+        }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> ListAlloys(int page = 1, int pageSize = 50, string? productType = null, string? productShape = null)
+    {
+        try
+        {
+            var result = await _listAlloysUseCase.ExecuteAsync(page, pageSize, productType, productShape);
             return Ok(result);
         }
         catch (Exception)
