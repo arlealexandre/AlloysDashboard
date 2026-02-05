@@ -2,9 +2,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { Button, Flex, Layout } from 'antd';
 import type { Alloy } from '../types/Alloy';
 import type { TableRowSelection } from 'antd/es/table/interface';
-
-import XYSelectionDrawer from './XYSelectionDrawer';
 import AlloysTable from './AlloysTable';
+import ScatterPlotViewer from './ScatterPlotViewer';
+
 const { Content } = Layout;
 
 interface Props {
@@ -12,7 +12,6 @@ interface Props {
     externalLoading: boolean
     handleFetchFailure: (message: string) => void
 }
-
 
 
 const DashboardContent = ({refreshTrigger, externalLoading, handleFetchFailure}: Props) => {
@@ -79,11 +78,6 @@ const DashboardContent = ({refreshTrigger, externalLoading, handleFetchFailure}:
         onChange: onSelectChange,
     };
 
-    const handleVisualize = (xAxis: string, yAxis: string) => {
-
-        console.log(`Visualizing ${xAxis} vs ${yAxis} for`, selectedAlloys);
-    };
-
     return (
         <Content style={{ padding: '20px' }}>
 
@@ -123,10 +117,10 @@ const DashboardContent = ({refreshTrigger, externalLoading, handleFetchFailure}:
 
                     </Flex>
 
-                    <XYSelectionDrawer 
-                        open={isDrawerOpen} 
+                    <ScatterPlotViewer 
+                        isOpen={isDrawerOpen} 
                         onClose={() => setIsDrawerOpen(false)}
-                        alloys={selectedAlloys}
+                        filteredAlloys={selectedAlloys}
                     />
 
                 </Content>
